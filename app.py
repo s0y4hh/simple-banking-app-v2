@@ -36,12 +36,12 @@ def create_app():
     else:
         # Construct the MySQL URL from individual environment variables if DATABASE_URL is not provided
         # Provide default values for all parameters to avoid None values
-        mysql_user = os.environ.get('MYSQL_USER', 'root')
-        mysql_password = os.environ.get('MYSQL_PASSWORD', '')
-        mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
+        mysql_user = os.environ.get('MYSQL_USER')
+        mysql_password = os.environ.get('MYSQL_PASSWORD')
+        mysql_host = os.environ.get('MYSQL_HOST')
         # Ensure port is an integer by providing a default and converting explicitly
         try:
-            mysql_port = int(os.environ.get('MYSQL_PORT', '3306'))
+            mysql_port = int(os.environ.get('MYSQL_PORT'))
         except (ValueError, TypeError):
             mysql_port = 3306  # Default to standard MySQL port if conversion fails
         
