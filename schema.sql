@@ -1,13 +1,13 @@
--- Database schema for Simple Banking App
+-- -- Database schema for Simple Banking App
 
--- Drop database if it exists to avoid conflicts
-DROP DATABASE IF EXISTS simple_banking;
+-- -- Drop database if it exists to avoid conflicts
+-- DROP DATABASE IF EXISTS simple_banking;
 
--- Create database
-CREATE DATABASE simple_banking CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- -- Create database
+-- CREATE DATABASE simple_banking CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- Use the database
-USE simple_banking;
+-- -- Use the database
+-- USE simple_banking;
 
 -- Users table
 CREATE TABLE user (
