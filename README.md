@@ -137,20 +137,43 @@ A user-friendly and responsive Flask-based banking application designed for depl
    - Note the database name, username, and password
    - Update your .env file with these credentials
 
-5. Initialize your database on PythonAnywhere:
+5. Configure Environment Variables:
+   - Go to the Web tab in your PythonAnywhere dashboard
+   - Scroll down to the "WSGI configuration file" section and click the link to edit your WSGI file
+   - In the WSGI file, add the following lines above the import statements to set environment variables:
+   ```python
+   # Set environment variables for database connection
+   import os
+   os.environ['SECRET_KEY'] = 'your_secret_key_here'
+   os.environ['MYSQL_USER'] = 'your_pythonanywhere_mysql_username'
+   os.environ['MYSQL_PASSWORD'] = 'your_pythonanywhere_mysql_password'
+   os.environ['MYSQL_HOST'] = 'your_pythonanywhere_mysql_hostname'
+   os.environ['MYSQL_PORT'] = '3306'
+   os.environ['MYSQL_DATABASE'] = 'your_pythonanywhere_database_name'
+   ```
+   - Replace the placeholder values with your actual PythonAnywhere MySQL credentials
+   - Save the file
+
+6. Initialize your database on PythonAnywhere:
    ```
    cd ~/simple-banking-app
    python init_db.py
    ```
 
-6. Configure a new web app via the PythonAnywhere dashboard:
+7. Configure a new web app via the PythonAnywhere dashboard:
    - Select "Manual configuration"
-   - Choose Python 3.8
+   - Choose Python 3.8 or newer
    - Set source code directory to `/home/yourusername/simple-banking-app`
    - Set working directory to `/home/yourusername/simple-banking-app`
-   - Set WSGI configuration file to point to your Flask app
+   - Set the virtual environment path to `/home/yourusername/.virtualenvs/myenv`
+   - Reload your web app
 
-7. Add environment variables in the PythonAnywhere dashboard for security
+8. Troubleshooting Database Connections:
+   - If you encounter database connection errors, ensure that:
+     - All environment variables are correctly set in the WSGI file
+     - The MySQL hostname includes the full domain (e.g., `yourusername.mysql.pythonanywhere-services.com`)
+     - The MySQL port is correctly set to `3306`
+     - The database name includes your username prefix if required by PythonAnywhere
 
 ## Usage
 
