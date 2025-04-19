@@ -371,7 +371,7 @@ def init_flask_app_db():
 
 if __name__ == "__main__":
     print("== Simple Banking App Database Initialization ==")
-    print("\nStep 1: Initializing MySQL database schema...")
+    print("\nStep 1: Initializing MySQL database schema directly...")
     mysql_success = init_mysql_database()
     
     if mysql_success:
