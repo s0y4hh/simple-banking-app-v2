@@ -14,7 +14,7 @@ from flask_limiter.errors import RateLimitExceeded
 from extensions import db, login_manager, bcrypt, limiter
 
 # Load environment variables
-load_dotenv(verbose=True)
+load_dotenv()
 
 # Initialize CSRF protection
 csrf = CSRFProtect()
