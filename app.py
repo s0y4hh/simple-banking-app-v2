@@ -40,7 +40,7 @@ def create_app():
         # Use defaults to avoid None values
         mysql_user = os.environ.get('MYSQL_USER', '')
         mysql_password = os.environ.get('MYSQL_PASSWORD', '')
-        mysql_host = os.environ.get('MYSQL_HOST', 'localhost')  # Default to localhost if not set
+        mysql_host = os.environ.get('MYSQL_HOST', '')  # Default to localhost if not set
         mysql_port = os.environ.get('MYSQL_PORT', '3306')
         mysql_database = os.environ.get('MYSQL_DATABASE', '')
         
