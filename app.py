@@ -39,7 +39,7 @@ def create_app():
         mysql_user = os.environ.get('MYSQL_USER')
         mysql_password = os.environ.get('MYSQL_PASSWORD')
         mysql_host = os.environ.get('MYSQL_HOST')
-        mysql_port = os.environ.get('MYSQL_PORT')
+        mysql_port = os.environ.get('MYSQL_PORT', '3306')
         mysql_database = os.environ.get('MYSQL_DATABASE')
         
         # Make sure all values are strings
