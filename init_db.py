@@ -12,15 +12,20 @@ load_dotenv()
 
 def init_mysql_database():
     """Initialize the MySQL database directly in Python instead of using schema.sql."""
+    # Use defaults to avoid None values
     mysql_user = os.environ.get('MYSQL_USER', 'root')
     mysql_password = os.environ.get('MYSQL_PASSWORD', '')
     mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
     mysql_port = os.environ.get('MYSQL_PORT', '3306')
     mysql_database = os.environ.get('MYSQL_DATABASE', 'simple_banking')
     
+    # Convert port to string to avoid type issues
+    mysql_port = str(mysql_port)
+    
     # Try to connect to MySQL server without database (to create it if needed)
     try:
         print("Attempting to connect to MySQL server...")
+        print(f"Connection details: {mysql_host}:{mysql_port} as {mysql_user}")
         connection = pymysql.connect(
             host=mysql_host,
             port=int(mysql_port),
