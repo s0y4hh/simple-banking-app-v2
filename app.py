@@ -41,7 +41,7 @@ def create_app():
         mysql_port = os.environ.get('MYSQL_PORT')
         mysql_database = os.environ.get('MYSQL_DATABASE')
         
-        app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
+        app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
