@@ -23,7 +23,7 @@ def init_mysql_database():
         print("Attempting to connect to MySQL server...")
         connection = pymysql.connect(
             host=mysql_host,
-            port=mysql_port,
+            port=int(mysql_port),
             user=mysql_user,
             password=mysql_password,
             charset='utf8mb4',
