@@ -24,6 +24,7 @@ pymysql.install_as_MySQLdb()
 
 # Create Flask application
 def create_app():
+    # Make sure environment variables are loaded
     load_dotenv()
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or secrets.token_hex(16)
@@ -37,16 +38,22 @@ def create_app():
     else:
         # Construct the MySQL URL from individual environment variables if DATABASE_URL is not provided
         # Use defaults to avoid None values
-        mysql_user = os.environ.get('MYSQL_USER')
-        mysql_password = os.environ.get('MYSQL_PASSWORD')
-        mysql_host = os.environ.get('MYSQL_HOST')
-        mysql_port = os.environ.get('MYSQL_PORT','3306')
-        mysql_database = os.environ.get('MYSQL_DATABASE')
+        mysql_user = os.environ.get('MYSQL_USER', '')
+        mysql_password = os.environ.get('MYSQL_PASSWORD', '')
+        mysql_host = os.environ.get('MYSQL_HOST', 'localhost')  # Default to localhost if not set
+        mysql_port = os.environ.get('MYSQL_PORT', '3306')
+        mysql_database = os.environ.get('MYSQL_DATABASE', '')
         
         # Make sure all values are strings
         mysql_port = str(mysql_port)
         
-        app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
+        # Check if required parameters are set
+        if not mysql_host or not mysql_user or not mysql_database:
+            print(f"WARNING: Missing database configuration. Host: {mysql_host}, User: {mysql_user}, Database: {mysql_database}")
+        
+        db_uri = f"mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
+        print(f"Database URI: {db_uri}")
+        app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -102,6 +109,12 @@ def init_db():
             print("Created admin user with username 'admin' and password 'admin123'")
 
 if __name__ == '__main__':
+    # Print environment variables for debugging
+    print(f"Environment variables:")
+    print(f"MYSQL_HOST: {os.environ.get('MYSQL_HOST')}")
+    print(f"MYSQL_USER: {os.environ.get('MYSQL_USER')}")
+    print(f"MYSQL_DATABASE: {os.environ.get('MYSQL_DATABASE')}")
+    
     with app.app_context():
         db.create_all()
     app.run(debug=True) 
