@@ -49,7 +49,7 @@ def create_app():
     if not mysql_host or not mysql_user or not mysql_database:
         print(f"WARNING: Missing database configuration. Host: {mysql_host}, User: {mysql_user}, Database: {mysql_database}")
     
-    db_uri = f"mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
+    db_uri = f"mysql+pymysql://{mysql_user}:{mysql_password}@ripir28264.mysql.pythonanywhere-services.com:{mysql_port}/{mysql_database}"
     print(f"Database URI: {db_uri}")
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
