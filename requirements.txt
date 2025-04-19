@@ -9,6 +9,6 @@ WTForms==3.0.1
 Werkzeug==2.3.7
 itsdangerous==2.1.2
 pymysql==1.1.0
-cryptography==41.0.3
+cryptography
 requests==2.31.0
 Flask-Limiter==3.5.0 
