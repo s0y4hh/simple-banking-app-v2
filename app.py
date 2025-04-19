@@ -35,13 +35,14 @@ def create_app():
         app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     else:
         # Construct the MySQL URL from individual environment variables if DATABASE_URL is not provided
-        mysql_user = os.environ.get('MYSQL_USER')
-        mysql_password = os.environ.get('MYSQL_PASSWORD')
-        mysql_host = os.environ.get('MYSQL_HOST')
-        mysql_port = os.environ.get('MYSQL_PORT')
-        mysql_database = os.environ.get('MYSQL_DATABASE')
+        # Provide default values for all parameters to avoid None values
+        mysql_user = os.environ.get('MYSQL_USER', 'root')
+        mysql_password = os.environ.get('MYSQL_PASSWORD', '')
+        mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
+        mysql_port = os.environ.get('MYSQL_PORT', '3306')
+        mysql_database = os.environ.get('MYSQL_DATABASE', 'simple_banking')
         
-        app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
+        app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
