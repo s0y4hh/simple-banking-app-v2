@@ -103,6 +103,19 @@ A user-friendly and responsive Flask-based banking application designed for depl
    cd simple-banking-app
    ```
 
+   **Alternative: Create your own repository with this code**
+   
+   If you want to create your own GitHub repository without forking:
+   ```
+   # After cloning, remove the original remote origin
+   git remote remove origin
+   
+   # Add your own repository as the new origin
+   git remote add origin https://github.com/yourusername/your-new-repo-name.git
+   git branch -M main
+   git push -u origin main
+   ```
+
 2. Install the required packages:
    ```
    pip install -r requirements.txt
