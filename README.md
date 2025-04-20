@@ -99,21 +99,19 @@ A user-friendly and responsive Flask-based banking application designed for depl
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/simple-banking-app.git
+   git clone https://github.com/lanlanjr/simple-banking-app.git
    cd simple-banking-app
-   ```
-
-   **Alternative: Create your own repository with this code**
    
-   If you want to create your own GitHub repository without forking:
-   ```
-   # After cloning, remove the original remote origin
+   # Set up your own repository
+   # First, create a new repository named 'simple-banking-app-v2' on GitHub
+   
+   # Then configure your local repository
    git remote remove origin
-   
-   # Add your own repository as the new origin
-   git remote add origin https://github.com/yourusername/your-new-repo-name.git
+   git remote add origin https://github.com/yourusername/simple-banking-app-v2.git
    git branch -M main
    git push -u origin main
+   
+   # Note: Replace 'yourusername' with your actual GitHub username
    ```
 
 2. Install the required packages:
