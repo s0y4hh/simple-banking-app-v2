@@ -132,14 +132,13 @@ A user-friendly and responsive Flask-based banking application designed for depl
 
 2. Upload your code using Git:
    ```
-   cd ~/
-   git clone https://github.com/yourusername/simple-banking-app.git
+   git clone https://github.com/yourusername/simple-banking-app-v2.git
    ```
 
-3. Set up a virtual environment:
+3. Install requirements:
    ```
-   mkvirtualenv --python=/usr/bin/python3.8 myenv
-   pip install -r ~/simple-banking-app/requirements.txt
+   cd simple-banking-app-v2
+   pip install -r requirements.txt
    ```
 
 4. Set up MySQL database on PythonAnywhere:
@@ -150,15 +149,14 @@ A user-friendly and responsive Flask-based banking application designed for depl
 
 5. Initialize your database on PythonAnywhere:
    ```
-   cd ~/simple-banking-app
    python init_db.py
    ```
 
 6. Configure a new web app via the PythonAnywhere dashboard:
    - Select "Manual configuration"
    - Choose Python 3.8
-   - Set source code directory to `/home/yourusername/simple-banking-app`
-   - Set working directory to `/home/yourusername/simple-banking-app`
+   - Set source code directory to `/home/yourusername/simple-banking-app-v2`
+   - Set working directory to `/home/yourusername/simple-banking-app-v2`
    - Set WSGI configuration file to point to your Flask app
 
 7. Add environment variables in the PythonAnywhere dashboard for security
