@@ -12,12 +12,12 @@ load_dotenv()
 
 def init_mysql_database():
     """Initialize the MySQL database directly in Python instead of using schema.sql."""
-    # Use defaults to avoid None values
-    mysql_user = os.environ.get('MYSQL_USER')
-    mysql_password = os.environ.get('MYSQL_PASSWORD')
-    mysql_host = os.environ.get('MYSQL_HOST')
-    mysql_port = os.environ.get('MYSQL_PORT')
-    mysql_database = os.environ.get('MYSQL_DATABASE')
+    # Use correct environment variable names
+    mysql_user = os.environ.get('MYSQL_USER', 'bankapp')
+    mysql_password = os.environ.get('MYSQL_PASSWORD', 's0y4hh')
+    mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
+    mysql_port = os.environ.get('MYSQL_PORT', '3306')
+    mysql_database = os.environ.get('MYSQL_DATABASE', 'simple_banking')
     
     # Convert port to string to avoid type issues
     mysql_port = str(mysql_port)
@@ -398,4 +398,4 @@ if __name__ == "__main__":
         print("Make sure MySQL server is running and credentials are correct in .env file.")
         # Exit with error code
         import sys
-        sys.exit(1) 
+        sys.exit(1)  

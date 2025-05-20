@@ -9,6 +9,7 @@ import secrets
 import pymysql
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter.errors import RateLimitExceeded
+from werkzeug.urls import url_parse
 
 # Import extensions
 from extensions import db, login_manager, bcrypt, limiter
@@ -34,11 +35,11 @@ def create_app():
 
     # Construct the MySQL URL from individual environment variables if DATABASE_URL is not provided
     # Use defaults to avoid None values
-    mysql_user = os.environ.get('MYSQL_USER', '')
-    mysql_password = os.environ.get('MYSQL_PASSWORD', '')
-    mysql_host = os.environ.get('MYSQL_HOST', '')  # Default to localhost if not set
+    mysql_user = os.environ.get('MYSQL_USER', 'bankapp')
+    mysql_password = os.environ.get('MYSQL_PASSWORD', 's0y4hh')
+    mysql_host = os.environ.get('MYSQL_HOST', 'localhost')  # Default to localhost if not set
     mysql_port = os.environ.get('MYSQL_PORT', '3306')
-    mysql_database = os.environ.get('MYSQL_DATABASE', '')
+    mysql_database = os.environ.get('MYSQL_DATABASE', 'simple_banking')
     
     # Make sure all values are strings
     mysql_port = str(mysql_port)
@@ -113,4 +114,4 @@ if __name__ == '__main__':
     
     with app.app_context():
         db.create_all()
-    app.run(debug=True) 
+    app.run(debug=True)
