@@ -42,9 +42,24 @@
             </span>
           </p>
         </div>
-
         <form action="{{ url_for('execute_transfer') }}" method="post">
           {{ form.hidden_tag() }}
+          <div class="mb-3">
+            <label for="pin" class="form-label"
+              >Enter your 4-6 digit PIN for 2FA</label
+            >
+            <input
+              type="password"
+              class="form-control"
+              id="pin"
+              name="pin"
+              maxlength="6"
+              minlength="4"
+              inputmode="numeric"
+              pattern="\d{4,6}"
+              required
+            />
+          </div>
           <div class="d-flex justify-content-between">
             <a href="{{ url_for('transfer') }}" class="btn btn-secondary"
               >Cancel</a

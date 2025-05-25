@@ -26,6 +26,10 @@ class RegistrationForm(FlaskForm):
     ])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    pin = PasswordField('4-6 Digit PIN', validators=[
+        DataRequired(),
+        Regexp(r'^\d{4,6}$', message="PIN must be 4 to 6 digits.")
+    ])
     submit = SubmitField('Register')
 
     def validate_username(self, username):

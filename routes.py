@@ -126,6 +126,7 @@ def register():
             return render_template('register.html', title='Register', form=form)
         user = User(username=username, email=email, status='pending')
         user.set_password(form.password.data)
+        user.set_pin(form.pin.data)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been registered and is awaiting admin approval.')
@@ -198,27 +199,26 @@ def execute_transfer():
     if current_user.status != 'active' and not current_user.is_admin and not current_user.is_manager:
         flash('Your account is awaiting approval from an administrator.')
         return redirect(url_for('index'))
-    
     form = ConfirmTransferForm()
+    pin = request.form.get('pin')
+    if not pin or not current_user.check_pin(pin):
+        flash('Invalid PIN. Transfer cancelled.')
+        return redirect(url_for('transfer'))
     if form.validate_on_submit():
         amount = float(form.amount.data)
-        
         # Find recipient based on transfer type
         recipient = None
         if form.transfer_type.data == 'username':
             recipient = User.query.filter_by(username=form.recipient_username.data).first()
         else:  # account
             recipient = User.query.filter_by(account_number=form.recipient_account.data).first()
-        
         if recipient is None:
             flash('Recipient not found.')
             return redirect(url_for('transfer'))
-        
         # Check if recipient account is active
         if recipient.status != 'active' and not recipient.is_admin and not recipient.is_manager:
             flash('The recipient account is not active.')
             return redirect(url_for('transfer'))
-        
         if current_user.transfer_money(recipient, amount):
             db.session.commit()
             flash(f'Successfully transferred ₱{amount:.2f} to {recipient.username}')
@@ -226,7 +226,6 @@ def execute_transfer():
         else:
             flash('Transfer failed. Please check your balance.')
             return redirect(url_for('transfer'))
-    
     return redirect(url_for('transfer'))
 
 @app.route('/reset_password_request', methods=['GET', 'POST'])

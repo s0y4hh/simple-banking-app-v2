@@ -37,6 +37,17 @@
             <div class="text-danger">{{ error }}</div>
             {% endfor %}
           </div>
+          <div class="mb-3">
+            {{ form.pin.label(class="form-label") }} {{
+            form.pin(class="form-control", maxlength="6", minlength="4",
+            inputmode="numeric", pattern="\\d{4,6}") }}
+            <div class="form-text">
+              Enter a 4-6 digit PIN. This will be used for 2FA on transfers.
+            </div>
+            {% for error in form.pin.errors %}
+            <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
           <div class="d-grid gap-2">
             {{ form.submit(class="btn btn-primary") }}
           </div>
@@ -59,7 +70,7 @@
     if (/[A-Z]/.test(password)) score++;
     if (/[a-z]/.test(password)) score++;
     if (/\d/.test(password)) score++;
-    if (/[!@#$%^&*()_+\-=[\]{};:'",.<>/?]/.test(password)) score++;
+    if (/[!@#$%^&*()_+\-=[\]{};:'\",.<>/?]/.test(password)) score++;
     if (score <= 2) return { text: "Weak", color: "red" };
     if (score === 3) return { text: "Moderate", color: "orange" };
     if (score >= 4) return { text: "Strong", color: "green" };
