@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
 from app import app, csrf
 from extensions import db, limiter
-from forms import LoginForm, RegistrationForm, TransferForm, ResetPasswordRequestForm, ResetPasswordForm, DepositForm, UserEditForm, ConfirmTransferForm
+from forms import LoginForm, RegistrationForm, TransferForm, ResetPasswordRequestForm, ResetPasswordForm, DepositForm, UserEditForm, ConfirmTransferForm, SecurityAnswerForm
 from models import User, Transaction
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 import os
@@ -235,19 +235,20 @@ def execute_transfer():
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
+    from forms import ResetPasswordRequestForm
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
-            # Store user id in session for next step
             session['reset_user_id'] = user.id
             return redirect(url_for('reset_password_security'))
-        flash('Check your email for instructions to reset your password')
+        flash('If the email exists, you will receive further instructions.')
         return redirect(url_for('login'))
     return render_template('reset_password_request.html', title='Reset Password', form=form)
 
 @app.route('/reset_password_security', methods=['GET', 'POST'])
 def reset_password_security():
+    from forms import SecurityAnswerForm
     user_id = session.get('reset_user_id')
     if not user_id:
         flash('Session expired. Please start the password reset process again.')
@@ -264,18 +265,19 @@ def reset_password_security():
         'dream_job': "What was your dream job as a child?"
     }
     question = question_map.get(user.security_question, 'Security Question')
-    if request.method == 'POST':
-        answer = request.form.get('security_answer', '')
+    form = SecurityAnswerForm()
+    if form.validate_on_submit():
+        answer = form.security_answer.data
         if user.check_security_answer(answer):
-            # Mark as verified and allow password reset
             session['reset_verified'] = True
             return redirect(url_for('reset_password_token'))
         else:
             flash('Incorrect answer to the security question.')
-    return render_template('reset_password_security.html', question=question)
+    return render_template('reset_password_security.html', question=question, form=form)
 
 @app.route('/reset_password_token', methods=['GET', 'POST'])
 def reset_password_token():
+    from forms import ResetPasswordForm
     user_id = session.get('reset_user_id')
     verified = session.get('reset_verified')
     if not user_id or not verified:

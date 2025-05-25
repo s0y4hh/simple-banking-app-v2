@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash
 import datetime
 import psgc_api
 import traceback  # For detailed error tracing
+from extensions import db
 
 # Load environment variables
 load_dotenv()
@@ -78,6 +79,9 @@ def init_mysql_database():
                   status VARCHAR(20) DEFAULT 'pending',
                   is_admin BOOLEAN DEFAULT FALSE,
                   is_manager BOOLEAN DEFAULT FALSE,
+                  pin VARCHAR(4),  -- New field: PIN
+                  security_question VARCHAR(100),  -- New field: Security question
+                  security_answer_hash VARCHAR(128),  -- New field: Security answer (hashed)
                   date_registered DATETIME DEFAULT CURRENT_TIMESTAMP,
                   INDEX idx_username (username),
                   INDEX idx_email (email),
@@ -374,6 +378,90 @@ def init_flask_app_db():
         print(traceback.format_exc())
         return False
 
+def init_db():
+    """Initialize the database by dropping and recreating all tables, and adding a default admin user."""
+    from models import User, Transaction
+    db.drop_all()
+    db.create_all()
+    credentials = []
+    # Create default admin user
+    if not User.query.filter_by(username="admin").first():
+        admin = User(
+            username="admin",
+            email="admin@bankapp.com",
+            status="active",
+            is_admin=True
+        )
+        admin.set_password("Admin!234")
+        admin.set_pin("4321")
+        admin.security_question = "first_teacher"
+        admin.set_security_answer("Smith")
+        db.session.add(admin)
+        db.session.commit()
+        credentials.append("Admin: username=admin, password=Admin!234, PIN=4321, security question='What is the last name of your first teacher?', answer=Smith")
+    # Create default manager user
+    if not User.query.filter_by(username="manager").first():
+        manager = User(
+            username="manager",
+            email="manager@bankapp.com",
+            status="active",
+            is_admin=True,
+            is_manager=True
+        )
+        manager.set_password("Manager!234")
+        manager.set_pin("9876")
+        manager.security_question = "dream_job"
+        manager.set_security_answer("Astronaut")
+        db.session.add(manager)
+        db.session.commit()
+        credentials.append("Manager: username=manager, password=Manager!234, PIN=9876, security question='What was your dream job as a child?', answer=Astronaut")
+    # Create a sample active user
+    if not User.query.filter_by(username="testuser").first():
+        user = User(
+            username="testuser",
+            email="testuser@example.com",
+            status="active"
+        )
+        user.set_password("Test!234")
+        user.set_pin("2468")
+        user.security_question = "memorable_place"
+        user.set_security_answer("Boracay")
+        db.session.add(user)
+        db.session.commit()
+        credentials.append("Test User: username=testuser, password=Test!234, PIN=2468, security question='What is the name of a memorable place from your childhood?', answer=Boracay")
+    # Create a sample pending user
+    if not User.query.filter_by(username="pendinguser").first():
+        user = User(
+            username="pendinguser",
+            email="pendinguser@example.com",
+            status="pending"
+        )
+        user.set_password("Pending!234")
+        user.set_pin("1357")
+        user.security_question = "favorite_childhood_friend"
+        user.set_security_answer("Miguel")
+        db.session.add(user)
+        db.session.commit()
+        credentials.append("Pending User: username=pendinguser, password=Pending!234, PIN=1357, security question='What is the first name of your favorite childhood friend?', answer=Miguel")
+    # Create a sample deactivated user
+    if not User.query.filter_by(username="deactivateduser").first():
+        user = User(
+            username="deactivateduser",
+            email="deactivateduser@example.com",
+            status="deactivated"
+        )
+        user.set_password("Deactivated!234")
+        user.set_pin("8642")
+        user.security_question = "first_pet"
+        user.set_security_answer("Shadow")
+        db.session.add(user)
+        db.session.commit()
+        credentials.append("Deactivated User: username=deactivateduser, password=Deactivated!234, PIN=8642, security question='What was the name of your first pet?', answer=Shadow")
+    print("\n=== Database recreated and all default users added with PIN and security question/answer. ===\n")
+    print("Credentials for all default users:")
+    for cred in credentials:
+        print(cred)
+
 if __name__ == "__main__":
     print("== Simple Banking App Database Initialization ==")
     print("\nStep 1: Initializing MySQL database schema directly...")
@@ -398,4 +486,9 @@ if __name__ == "__main__":
         print("Make sure MySQL server is running and credentials are correct in .env file.")
         # Exit with error code
         import sys
-        sys.exit(1)  
+        sys.exit(1)
+    
+    # Additional initialization (if needed) can be called here
+    from app import app
+    with app.app_context():
+        init_db()

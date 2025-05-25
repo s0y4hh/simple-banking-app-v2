@@ -102,8 +102,9 @@ class ResetPasswordRequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Request Password Reset')
 
-    def validate(self, extra_validators=None):
-        return super(ResetPasswordRequestForm, self).validate()
+class SecurityAnswerForm(FlaskForm):
+    security_answer = PasswordField('Security Answer', validators=[DataRequired()])
+    submit = SubmitField('Continue')
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('New Password', validators=[DataRequired()])
