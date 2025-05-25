@@ -104,6 +104,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
+    session.clear()  # Invalidate all session data
     return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
