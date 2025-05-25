@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
@@ -83,6 +83,11 @@ def load_user(user_id):
 
 # Import routes after app creation
 from routes import *
+
+# --- Add: Make balance visibility available in all templates ---
+@app.context_processor
+def inject_balance_visibility():
+    return {'show_balance': session.get('show_balance', True)}
 
 # Database initialization function
 def init_db():

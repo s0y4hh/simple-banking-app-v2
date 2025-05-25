@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request, jsonify
+from flask import render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
 from app import app, csrf
@@ -909,4 +909,11 @@ def manager_transfers():
     return render_template('manager/transfers.html', 
                          title='Transfer Transactions', 
                          transactions=transactions,
-                         users=users) 
+                         users=users)
+
+@app.route('/toggle_balance_visibility', methods=['POST'])
+@login_required
+def toggle_balance_visibility():
+    current = session.get('show_balance', True)
+    session['show_balance'] = not current
+    return jsonify({'show_balance': session['show_balance']})
