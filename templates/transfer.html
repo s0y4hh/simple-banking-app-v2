@@ -1,87 +1,273 @@
 {% extends "base.html" %} {% block content %}
-<div class="row">
-  <div class="col-md-6 offset-md-3">
+<!-- Transfer Header -->
+<div class="row mb-4">
+  <div class="col-12">
     <div class="card">
-      <div class="card-header">
-        <h4>Transfer Money</h4>
-      </div>
       <div class="card-body">
-        <div class="alert alert-info">
-          Your current balance:
-          <strong id="balance-value">
-            {% if show_balance %} ₱{{ "%.2f"|format(current_user.balance) }} {%
-            else %}
-            <span class="blurred-balance">••••••••</span>
-            {% endif %}
-          </strong>
-          <button
-            id="toggle-balance-btn"
-            class="btn btn-link btn-sm align-baseline"
-            type="button"
-            title="Show/Hide Balance"
-          >
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h2 class="mb-2">
+              <i
+                class="bi bi-send-fill me-2"
+                style="color: var(--primary-blue)"
+              ></i
+              >Send Money
+            </h2>
+            <p class="mb-0 text-muted">
+              <i class="bi bi-shield-check me-1"></i>
+              Secure transfers with 256-bit encryption
+            </p>
+          </div>
+          <div class="col-md-4 text-end">
             <i
-              id="eye-icon"
-              class="bi {{ 'bi-eye-slash' if not show_balance else 'bi-eye' }}"
+              class="bi bi-arrow-left-right"
+              style="font-size: 3rem; opacity: 0.3; color: var(--primary-blue)"
             ></i>
-          </button>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <form method="post" novalidate>
-          {{ form.hidden_tag() }}
-
-          <div class="mb-3">
-            <label class="form-label">Transfer Method</label>
-            <div class="btn-group w-100" role="group">
-              {% for subfield in form.transfer_type %}
-              <input
-                type="radio"
-                class="btn-check"
-                name="transfer_type"
-                id="{{ subfield.id }}"
-                value="{{ subfield.data }}"
-                autocomplete="off"
-                {%
-                if
-                subfield.checked
-                %}checked{%
-                endif
-                %}
-              />
-              <label class="btn btn-outline-primary" for="{{ subfield.id }}"
-                >{{ subfield.label }}</label
-              >
-              {% endfor %}
+<div class="row">
+  <div class="col-lg-8 offset-lg-2">
+    <div class="row">
+      <!-- Balance Card -->
+      <div class="col-12 mb-4">
+        <div class="card balance-card">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <div class="balance-label">
+                  <i class="bi bi-wallet2 me-2"></i>Available Balance
+                </div>
+                <div class="balance-amount" id="balance-value">
+                  {% if show_balance %} ₱{{ "%.2f"|format(current_user.balance)
+                  }} {% else %}
+                  <span class="blurred-balance">••••••••</span>
+                  {% endif %}
+                </div>
+                <button
+                  id="toggle-balance-btn"
+                  class="btn btn-light btn-sm mt-2"
+                  type="button"
+                  title="Show/Hide Balance"
+                >
+                  <i
+                    id="eye-icon"
+                    class="bi {{ 'bi-eye-slash' if not show_balance else 'bi-eye' }} me-1"
+                  ></i>
+                  {{ 'Show' if not show_balance else 'Hide' }} Balance
+                </button>
+              </div>
+              <div class="col-md-4 text-end">
+                <div class="text-muted">
+                  <i class="bi bi-credit-card me-2"></i>
+                  <small>Account: {{ current_user.account_number }}</small>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="mb-3" id="username-field">
-            {{ form.recipient_username.label(class="form-label") }} {{
-            form.recipient_username(class="form-control") }} {% for error in
-            form.recipient_username.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-          </div>
-          <div class="mb-3" id="account-field" style="display: none">
-            {{ form.recipient_account.label(class="form-label") }} {{
-            form.recipient_account(class="form-control") }} {% for error in
-            form.recipient_account.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-          </div>
-          <div class="mb-3">
-            {{ form.amount.label(class="form-label") }}
-            <div class="input-group">
-              <span class="input-group-text">₱</span>
-              {{ form.amount(class="form-control") }}
+        </div>
+      </div>
+
+      <!-- Transfer Form -->
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-send me-2"></i>
+              <h5 class="mb-0">Transfer Details</h5>
             </div>
-            {% for error in form.amount.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
           </div>
-          <div class="d-grid gap-2">
-            {{ form.submit(class="btn btn-primary") }}
+          <div class="card-body">
+            <form method="post" novalidate>
+              {{ form.hidden_tag() }}
+
+              <!-- Transfer Method Selection -->
+              <div class="mb-4">
+                <label class="form-label fw-bold">
+                  <i class="bi bi-toggles2 me-2"></i>Transfer Method
+                </label>
+                <div class="transfer-method-container">
+                  {% for subfield in form.transfer_type %}
+                  <div class="transfer-method-option">
+                    <input
+                      type="radio"
+                      class="btn-check"
+                      name="transfer_type"
+                      id="{{ subfield.id }}"
+                      value="{{ subfield.data }}"
+                      autocomplete="off"
+                      {%
+                      if
+                      subfield.checked
+                      %}checked{%
+                      endif
+                      %}
+                    />
+                    <label
+                      class="transfer-method-label"
+                      for="{{ subfield.id }}"
+                    >
+                      <div class="method-icon">
+                        {% if subfield.data == 'username' %}
+                        <i class="bi bi-person-circle"></i>
+                        {% else %}
+                        <i class="bi bi-credit-card"></i>
+                        {% endif %}
+                      </div>
+                      <div class="method-text">
+                        <div class="method-title">
+                          {{ subfield.label.text }}
+                        </div>
+                        <div class="method-subtitle">
+                          {% if subfield.data == 'username' %} Send using
+                          username {% else %} Send using account number {% endif
+                          %}
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Recipient Fields -->
+              <div class="mb-4" id="username-field">
+                <label class="form-label fw-bold">
+                  <i class="bi bi-person me-2"></i>{{
+                  form.recipient_username.label.text }}
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-at"></i>
+                  </span>
+                  {{ form.recipient_username(class="form-control",
+                  placeholder="Enter recipient username") }}
+                </div>
+                {% for error in form.recipient_username.errors %}
+                <div class="text-danger mt-1">
+                  <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                </div>
+                {% endfor %}
+              </div>
+
+              <div class="mb-4" id="account-field" style="display: none">
+                <label class="form-label fw-bold">
+                  <i class="bi bi-credit-card me-2"></i>{{
+                  form.recipient_account.label.text }}
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-hash"></i>
+                  </span>
+                  {{ form.recipient_account(class="form-control",
+                  placeholder="Enter account number") }}
+                </div>
+                {% for error in form.recipient_account.errors %}
+                <div class="text-danger mt-1">
+                  <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                </div>
+                {% endfor %}
+              </div>
+
+              <!-- Amount Field -->
+              <div class="mb-4">
+                <label class="form-label fw-bold">
+                  <i class="bi bi-currency-exchange me-2"></i>{{
+                  form.amount.label.text }}
+                </label>
+                <div class="input-group amount-input">
+                  <span class="input-group-text">
+                    <i class="bi bi-currency-peso"></i>
+                  </span>
+                  {{ form.amount(class="form-control", placeholder="0.00") }}
+                  <span class="input-group-text">PHP</span>
+                </div>
+                {% for error in form.amount.errors %}
+                <div class="text-danger mt-1">
+                  <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                </div>
+                {% endfor %}
+                <div class="form-text">
+                  <i class="bi bi-info-circle me-1"></i>
+                  Minimum transfer amount: ₱1.00
+                </div>
+              </div>
+
+              <!-- Transfer Security Notice -->
+              <div class="alert alert-light border mb-4">
+                <div class="row align-items-center">
+                  <div class="col-md-1 text-center">
+                    <i
+                      class="bi bi-shield-check"
+                      style="font-size: 1.5rem; color: var(--accent-green)"
+                    ></i>
+                  </div>
+                  <div class="col-md-11">
+                    <h6 class="mb-1">Secure Transfer</h6>
+                    <small class="text-muted">
+                      Your transfer is protected by bank-grade security. All
+                      transactions are encrypted and monitored.
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-send-fill me-2"></i>{{ form.submit.label.text
+                  }}
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Transfer Tips -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <i class="bi bi-lightbulb me-2"></i>Transfer Tips
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <div class="tip-item">
+                  <i class="bi bi-clock text-primary"></i>
+                  <strong>Instant Transfers</strong>
+                  <p class="mb-0 small text-muted">
+                    Transfers are processed instantly 24/7
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="tip-item">
+                  <i class="bi bi-shield-check text-success"></i>
+                  <strong>Secure & Safe</strong>
+                  <p class="mb-0 small text-muted">
+                    Bank-grade encryption protects your money
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="tip-item">
+                  <i class="bi bi-receipt text-info"></i>
+                  <strong>Transaction History</strong>
+                  <p class="mb-0 small text-muted">
+                    View all transfers in your account page
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -93,6 +279,7 @@
     var transferType = document.getElementsByName("transfer_type");
     var usernameField = document.getElementById("username-field");
     var accountField = document.getElementById("account-field");
+
     for (var i = 0; i < transferType.length; i++) {
       transferType[i].addEventListener("change", function () {
         if (this.value === "username") {
@@ -104,6 +291,7 @@
         }
       });
     }
+
     // Set initial state
     for (var i = 0; i < transferType.length; i++) {
       if (transferType[i].checked) {
@@ -116,10 +304,18 @@
         }
       }
     }
+
     // Balance toggle
     const btn = document.getElementById("toggle-balance-btn");
     if (btn) {
       btn.addEventListener("click", function () {
+        const button = this;
+        const icon = document.getElementById("eye-icon");
+
+        button.disabled = true;
+        button.innerHTML =
+          '<span class="loading-spinner me-2"></span>Loading...';
+
         fetch("{{ url_for('toggle_balance_visibility') }}", {
           method: "POST",
           headers: {
@@ -131,16 +327,134 @@
           .then((response) => response.json())
           .then((data) => {
             window.location.reload();
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            button.disabled = false;
+            button.innerHTML =
+              '<i class="bi bi-exclamation-triangle me-1"></i>Error';
           });
       });
     }
   });
 </script>
+
 <style>
   .blurred-balance {
     letter-spacing: 0.2em;
     filter: blur(2px);
     user-select: none;
+    font-family: monospace;
+  }
+
+  .transfer-method-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .transfer-method-option {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .transfer-method-label {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid var(--light-gray);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    width: 100%;
+    margin: 0;
+  }
+
+  .transfer-method-label:hover {
+    border-color: var(--primary-blue);
+    background: rgba(0, 123, 255, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-check:checked + .transfer-method-label {
+    border-color: var(--primary-blue);
+    background: rgba(0, 123, 255, 0.1);
+    color: var(--primary-blue);
+  }
+
+  .method-icon {
+    margin-right: 1rem;
+    font-size: 1.5rem;
+    color: var(--primary-blue);
+  }
+
+  .method-title {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+  }
+
+  .method-subtitle {
+    font-size: 0.875rem;
+    color: var(--medium-gray);
+  }
+
+  .amount-input .form-control {
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .amount-input .input-group-text {
+    font-weight: bold;
+  }
+
+  .tip-item {
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .tip-item i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .tip-item strong {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .btn-primary {
+    background: linear-gradient(
+      135deg,
+      var(--primary-blue),
+      var(--secondary-blue)
+    );
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+  }
+
+  .loading-spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>
 {% endblock %}

@@ -1,78 +1,143 @@
 {% extends "base.html" %} {% block content %}
-<div class="row">
-  <div class="col-md-6 offset-md-3">
-    <div class="card">
-      <div class="card-header">
-        <h4>Register</h4>
+<div class="row justify-content-center">
+  <div class="col-lg-6 col-md-8">
+    <div class="card register-card">
+      <div class="card-header text-center">
+        <i class="bi bi-person-plus-fill fs-2 mb-2"></i>
+        <h4 class="mb-0">Create Your Account</h4>
+        <p class="mb-0 opacity-75">Join SecureBank Pro today</p>
       </div>
       <div class="card-body">
-        <form method="post" novalidate>
+        <form method="post" novalidate class="register-form">
           {{ form.hidden_tag() }}
+
+          <!-- Step 1: Personal Information -->
+          <div class="mb-3">
+            {{ form.firstname.label(class="form-label") }} {{
+            form.firstname(class="form-control", placeholder="Enter your first
+            name") }} {% for error in form.firstname.errors %}
+            <div class="text-danger mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+            </div>
+            {% endfor %}
+          </div>
+          <div class="mb-3">
+            {{ form.lastname.label(class="form-label") }} {{
+            form.lastname(class="form-control", placeholder="Enter your last
+            name") }} {% for error in form.lastname.errors %}
+            <div class="text-danger mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+            </div>
+            {% endfor %}
+          </div>
           <div class="mb-3">
             {{ form.username.label(class="form-label") }} {{
-            form.username(class="form-control") }} {% for error in
-            form.username.errors %}
-            <div class="text-danger">{{ error }}</div>
+            form.username(class="form-control", placeholder="Choose a unique
+            username") }} {% for error in form.username.errors %}
+            <div class="text-danger mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+            </div>
             {% endfor %}
           </div>
+
+          <!-- Step 2: Contact Information -->
           <div class="mb-3">
             {{ form.email.label(class="form-label") }} {{
-            form.email(class="form-control") }} {% for error in
+            form.email(class="form-control",
+            placeholder="your.email@example.com") }} {% for error in
             form.email.errors %}
-            <div class="text-danger">{{ error }}</div>
+            <div class="text-danger mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+            </div>
             {% endfor %}
           </div>
           <div class="mb-3">
-            {{ form.password.label(class="form-label") }} {{
-            form.password(class="form-control", id="password") }}
-            <div id="password-strength" class="form-text"></div>
+            {{ form.phone.label(class="form-label") }} {{
+            form.phone(class="form-control", placeholder="e.g. 9123456789") }}
+            {% for error in form.phone.errors %}
+            <div class="text-danger mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Step 3: Security -->
+          <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            <div class="input-group">
+              {{ form.password(class="form-control", placeholder="Create a
+              strong password", id="password-field") }}
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                id="toggle-password"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+            <div class="password-strength mt-2">
+              <div class="strength-meter">
+                <div class="strength-bar" id="strength-bar"></div>
+              </div>
+              <small class="strength-text"
+                >Password strength:
+                <span class="strength-level" id="strength-level"
+                  >Weak</span
+                ></small
+              >
+            </div>
             {% for error in form.password.errors %}
-            <div class="text-danger">{{ error }}</div>
+            <div class="text-danger mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+            </div>
             {% endfor %}
           </div>
           <div class="mb-3">
             {{ form.password2.label(class="form-label") }} {{
-            form.password2(class="form-control") }} {% for error in
-            form.password2.errors %}
-            <div class="text-danger">{{ error }}</div>
+            form.password2(class="form-control", placeholder="Confirm your
+            password") }} {% for error in form.password2.errors %}
+            <div class="text-danger mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+            </div>
             {% endfor %}
           </div>
           <div class="mb-3">
             {{ form.pin.label(class="form-label") }} {{
-            form.pin(class="form-control", maxlength="6", minlength="4",
-            inputmode="numeric", pattern="\\d{4,6}") }}
-            <div class="form-text">
-              Enter a 4-6 digit PIN. This will be used for 2FA on transfers.
+            form.pin(class="form-control", placeholder="4-6 digit PIN") }} {%
+            for error in form.pin.errors %}
+            <div class="text-danger mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
             </div>
-            {% for error in form.pin.errors %}
-            <div class="text-danger">{{ error }}</div>
             {% endfor %}
           </div>
           <div class="mb-3">
             {{ form.security_question.label(class="form-label") }} {{
             form.security_question(class="form-select") }} {% for error in
             form.security_question.errors %}
-            <div class="text-danger">{{ error }}</div>
+            <div class="text-danger mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+            </div>
             {% endfor %}
           </div>
           <div class="mb-3">
             {{ form.security_answer.label(class="form-label") }} {{
-            form.security_answer(class="form-control", autocomplete="off") }}
-            <div class="form-text">
-              Answer is case-sensitive. Avoid answers that are easy to guess.
+            form.security_answer(class="form-control", placeholder="Enter your
+            answer") }} {% for error in form.security_answer.errors %}
+            <div class="text-danger mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
             </div>
-            {% for error in form.security_answer.errors %}
-            <div class="text-danger">{{ error }}</div>
             {% endfor %}
           </div>
-          <div class="d-grid gap-2">
-            {{ form.submit(class="btn btn-primary") }}
+
+          <div class="d-grid mt-4">
+            {{ form.submit(class="btn btn-success btn-lg") }}
           </div>
         </form>
-        <div class="mt-3 text-center">
-          <p>
+        <div class="text-center mt-4">
+          <p class="mb-0">
+            <i class="bi bi-person-check text-primary me-1"></i>
             Already have an account?
-            <a href="{{ url_for('login') }}">Login here</a>
+            <a href="{{ url_for('login') }}" class="link-primary">Sign In</a>
           </p>
         </div>
       </div>
@@ -83,28 +148,62 @@
 <script>
   function evaluatePasswordStrength(password) {
     let score = 0;
+    if (!password) return 0;
     if (password.length >= 8) score++;
     if (/[A-Z]/.test(password)) score++;
     if (/[a-z]/.test(password)) score++;
-    if (/\d/.test(password)) score++;
-    if (/[!@#$%^&*()_+\-=[\]{};:'\",.<>/?]/.test(password)) score++;
-    if (score <= 2) return { text: "Weak", color: "red" };
-    if (score === 3) return { text: "Moderate", color: "orange" };
-    if (score >= 4) return { text: "Strong", color: "green" };
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
   }
+
+  function getStrengthLabel(score) {
+    switch (score) {
+      case 0:
+      case 1:
+        return "Weak";
+      case 2:
+        return "Fair";
+      case 3:
+        return "Good";
+      case 4:
+        return "Strong";
+      case 5:
+        return "Very Strong";
+      default:
+        return "Weak";
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
-    const passwordInput = document.getElementById("password");
-    const strengthDiv = document.getElementById("password-strength");
-    if (passwordInput && strengthDiv) {
-      passwordInput.addEventListener("input", function () {
-        const val = passwordInput.value;
-        if (!val) {
-          strengthDiv.textContent = "";
-          return;
+    const passwordField = document.getElementById("password-field");
+    const strengthBar = document.getElementById("strength-bar");
+    const strengthLevel = document.getElementById("strength-level");
+    const togglePassword = document.getElementById("toggle-password");
+
+    if (passwordField) {
+      passwordField.addEventListener("input", function () {
+        const val = passwordField.value;
+        const score = evaluatePasswordStrength(val);
+        const percent = (score / 5) * 100;
+        strengthBar.style.width = percent + "%";
+        strengthBar.style.height = "8px";
+        strengthBar.style.background =
+          score < 2 ? "#dc3545" : score < 4 ? "#ffc107" : "#28a745";
+        strengthLevel.textContent = getStrengthLabel(score);
+        strengthLevel.style.color =
+          score < 2 ? "#dc3545" : score < 4 ? "#ffc107" : "#28a745";
+      });
+    }
+    if (togglePassword && passwordField) {
+      togglePassword.addEventListener("click", function () {
+        if (passwordField.type === "password") {
+          passwordField.type = "text";
+          togglePassword.innerHTML = '<i class="bi bi-eye-slash"></i>';
+        } else {
+          passwordField.type = "password";
+          togglePassword.innerHTML = '<i class="bi bi-eye"></i>';
         }
-        const result = evaluatePasswordStrength(val);
-        strengthDiv.textContent = "Password strength: " + result.text;
-        strengthDiv.style.color = result.color;
       });
     }
   });

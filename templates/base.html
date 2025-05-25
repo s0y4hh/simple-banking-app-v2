@@ -1,231 +1,703 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - SimpleBankApp</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }} - SecureBank Pro</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <!-- Custom CSS -->
     <style>
-        body {
-            padding-top: 60px;
-            background-color: #f8f9fa;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+      :root {
+        --primary-blue: #1e3a8a;
+        --secondary-blue: #3b82f6;
+        --accent-green: #10b981;
+        --warning-orange: #f59e0b;
+        --danger-red: #ef4444;
+        --light-gray: #f8fafc;
+        --medium-gray: #e2e8f0;
+        --dark-gray: #64748b;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        padding-top: 80px;
+      }
+
+      .main-content {
+        background: var(--light-gray);
+        min-height: calc(100vh - 80px);
+        border-radius: 20px 20px 0 0;
+        margin-top: 20px;
+        padding: 30px 0;
+      }
+
+      /* Navbar Styling */
+      .navbar-custom {
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue),
+          var(--secondary-blue)
+        );
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 15px 0;
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: white !important;
+      }
+
+      .navbar-brand i {
+        margin-right: 8px;
+        color: var(--accent-green);
+      }
+
+      .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-weight: 500;
+        margin: 0 5px;
+        padding: 8px 15px !important;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white !important;
+        transform: translateY(-1px);
+      }
+
+      .nav-link.active {
+        background: var(--accent-green);
+        color: white !important;
+      }
+
+      /* Card Styling */
+      .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 25px;
+        overflow: hidden;
+      }
+
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .card-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue),
+          var(--secondary-blue)
+        );
+        color: white;
+        border: none;
+        padding: 20px 25px;
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      .card-header i {
+        margin-right: 10px;
+        color: var(--accent-green);
+      }
+
+      .card-body {
+        padding: 25px;
+      }
+
+      /* Balance Card Special Styling */
+      .balance-card {
+        background: linear-gradient(135deg, var(--accent-green), #059669);
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .balance-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: pulse 3s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(0.8);
+          opacity: 0.5;
         }
-        .navbar-brand {
-            font-weight: bold;
+        50% {
+          transform: scale(1.2);
+          opacity: 0.3;
         }
-        .card {
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+
+      .balance-amount {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 10px 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .balance-label {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 15px;
+      }
+
+      /* Button Styling */
+      .btn {
+        border-radius: 10px;
+        font-weight: 500;
+        padding: 12px 24px;
+        transition: all 0.3s ease;
+        border: none;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--secondary-blue),
+          var(--primary-blue)
+        );
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, var(--accent-green), #059669);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+      }
+
+      .btn-warning {
+        background: linear-gradient(135deg, var(--warning-orange), #d97706);
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, var(--danger-red), #dc2626);
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+      }
+
+      /* Form Styling */
+      .form-control,
+      .form-select {
+        border-radius: 10px;
+        border: 2px solid var(--medium-gray);
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--secondary-blue);
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+      }
+
+      .form-label {
+        font-weight: 600;
+        color: var(--dark-gray);
+        margin-bottom: 8px;
+      }
+
+      /* Transaction Styling */
+      .transaction-item {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 5px solid var(--medium-gray);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .transaction-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .transaction-item.sent {
+        border-left-color: var(--danger-red);
+      }
+
+      .transaction-item.received {
+        border-left-color: var(--accent-green);
+      }
+
+      .transaction-item.deposit {
+        border-left-color: var(--secondary-blue);
+      }
+
+      /* Badge Styling */
+      .account-badge {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: 600;
+        margin-left: 8px;
+      }
+
+      /* Alert Styling */
+      .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+      }
+
+      .alert-info {
+        background: linear-gradient(135deg, #e0f2fe, #b3e5fc);
+        color: #01579b;
+      }
+
+      .alert-success {
+        background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+        color: #1b5e20;
+      }
+
+      .alert-warning {
+        background: linear-gradient(135deg, #fff8e1, #ffecb3);
+        color: #e65100;
+      }
+
+      .alert-danger {
+        background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        color: #b71c1c;
+      }
+
+      /* Footer */
+      .footer {
+        background: linear-gradient(135deg, #1f2937, #374151);
+        color: white;
+        padding: 40px 0 20px;
+        margin-top: 50px;
+      }
+
+      .footer h5 {
+        color: var(--accent-green);
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+
+      .footer a {
+        color: #d1d5db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer a:hover {
+        color: var(--accent-green);
+      }
+
+      .social-icons a {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 50%;
+        background: var(--secondary-blue);
+        color: white;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .social-icons a:hover {
+        background: var(--accent-green);
+        transform: translateY(-3px);
+      }
+
+      /* Quick Action Buttons */
+      .quick-action {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: none;
+        color: var(--dark-gray);
+        text-decoration: none;
+        display: block;
+      }
+
+      .quick-action:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        color: var(--primary-blue);
+        text-decoration: none;
+      }
+
+      .quick-action i {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: var(--secondary-blue);
+        transition: color 0.3s ease;
+      }
+
+      .quick-action:hover i {
+        color: var(--accent-green);
+      }
+
+      .quick-action h5 {
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .quick-action p {
+        font-size: 0.9rem;
+        opacity: 0.7;
+        margin: 0;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .balance-amount {
+          font-size: 2rem;
         }
-        .transaction-item {
-            border-left: 4px solid #dee2e6;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: white;
+
+        .card-body {
+          padding: 20px;
         }
-        .transaction-item.sent {
-            border-left-color: #dc3545;
+
+        .main-content {
+          margin-top: 10px;
+          border-radius: 15px 15px 0 0;
         }
-        .transaction-item.received {
-            border-left-color: #28a745;
+      }
+
+      /* Loading Animation */
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
-        .balance-card {
-            background: linear-gradient(135deg, #007bff, #6610f2);
-            color: white;
-        }
-        .flash-messages {
-            margin-top: 10px;
-        }
-        .account-badge {
-            font-size: 12px;
-            padding: 3px 8px;
-            border-radius: 10px;
-            margin-left: 5px;
-        }
-        .content {
-            flex: 1 0 auto;
-        }
-        .footer {
-            flex-shrink: 0;
-            background-color: #343a40;
-            color: white;
-            padding: 25px 0;
-            margin-top: 50px;
-        }
-        .footer a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            color: #0056b3;
-            text-decoration: underline;
-        }
-        .social-icons {
-            font-size: 1.5rem;
-        }
-        .social-icons a {
-            margin: 0 10px;
-            color: white;
-        }
-        .social-icons a:hover {
-            color: #007bff;
-        }
+      }
+
+      /* Status Indicators */
+      .status-active {
+        background: var(--accent-green);
+      }
+
+      .status-pending {
+        background: var(--warning-orange);
+      }
+
+      .status-deactivated {
+        background: var(--danger-red);
+      }
+
+      .status-admin {
+        background: var(--secondary-blue);
+      }
+
+      .status-manager {
+        background: var(--primary-blue);
+      }
     </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">SimpleBankApp</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('about') }}">About</a>
-                    </li>
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('account') }}">Account</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('transfer') }}">Transfer</a>
-                    </li>
-                    {% if current_user.is_manager %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="managerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Manager
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="managerDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('manager_dashboard') }}">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('admin_transactions') }}">Admin Audit</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('manager_transfers') }}">Transfers</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('user_list') }}">User List</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('admin_list') }}">Admin List</a></li>
-                        </ul>
-                    </li>
-                    {% elif current_user.is_admin %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
-                    </li>
-                    {% endif %}
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <span class="nav-link">
-                            {{ current_user.username }}
-                            {% if current_user.is_manager %}
-                            <span class="badge bg-danger account-badge">Manager</span>
-                            {% elif current_user.is_admin %}
-                            <span class="badge bg-warning text-dark account-badge">Admin</span>
-                            {% elif current_user.status == 'active' %}
-                            <span class="badge bg-success account-badge">Active</span>
-                            {% elif current_user.status == 'deactivated' %}
-                            <span class="badge bg-danger account-badge">Deactivated</span>
-                            {% else %}
-                            <span class="badge bg-secondary account-badge">Pending</span>
-                            {% endif %}
-                        </span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg fixed-top navbar-custom">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}">
+          <i class="bi bi-bank2"></i>SecureBank Pro
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('about') }}">
+                <i class="bi bi-info-circle me-1"></i>About
+              </a>
+            </li>
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('index') }}">
+                <i class="bi bi-house me-1"></i>Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('account') }}">
+                <i class="bi bi-person-circle me-1"></i>Account
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('transfer') }}">
+                <i class="bi bi-arrow-left-right me-1"></i>Transfer
+              </a>
+            </li>
+            {% if current_user.is_manager %}
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="managerDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-gear me-1"></i>Manager
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="managerDropdown">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('manager_dashboard') }}"
+                    ><i class="bi bi-speedometer2 me-2"></i>Dashboard</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('admin_transactions') }}"
+                    ><i class="bi bi-search me-2"></i>Admin Audit</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('manager_transfers') }}"
+                    ><i class="bi bi-list-ul me-2"></i>Transfers</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('user_list') }}"
+                    ><i class="bi bi-people me-2"></i>User List</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('admin_list') }}"
+                    ><i class="bi bi-shield-check me-2"></i>Admin List</a
+                  >
+                </li>
+              </ul>
+            </li>
+            {% elif current_user.is_admin %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                <i class="bi bi-shield-check me-1"></i>Admin Panel
+              </a>
+            </li>
+            {% endif %} {% endif %}
+          </ul>
+          <ul class="navbar-nav">
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <span class="nav-link">
+                <i class="bi bi-person-circle me-1"></i>{{ current_user.username
+                }} {% if current_user.is_manager %}
+                <span class="badge status-manager account-badge">Manager</span>
+                {% elif current_user.is_admin %}
+                <span class="badge status-admin account-badge">Admin</span>
+                {% elif current_user.status == 'active' %}
+                <span class="badge status-active account-badge">Active</span>
+                {% elif current_user.status == 'deactivated' %}
+                <span class="badge status-deactivated account-badge"
+                  >Inactive</span
+                >
+                {% else %}
+                <span class="badge status-pending account-badge">Pending</span>
+                {% endif %}
+              </span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">
+                <i class="bi bi-box-arrow-right me-1"></i>Logout
+              </a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('login') }}">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('register') }}">
+                <i class="bi bi-person-plus me-1"></i>Register
+              </a>
+            </li>
+            {% endif %}
+          </ul>
         </div>
+      </div>
     </nav>
 
-    <div class="container mt-4 content">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
+    <div class="main-content">
+      <div class="container">
+        {% with messages = get_flashed_messages() %} {% if messages %}
         <div class="flash-messages">
-            {% for message in messages %}
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
+          {% for message in messages %}
+          <div
+            class="alert alert-info alert-dismissible fade show"
+            role="alert"
+          >
+            <i class="bi bi-info-circle me-2"></i>{{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+          {% endfor %}
         </div>
-        {% endif %}
-        {% endwith %}
-
-        {% block content %}{% endblock %}
+        {% endif %} {% endwith %} {% block content %}{% endblock %}
+      </div>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h5>SimpleBankApp</h5>
-                    <p class="mb-3">A secure and user-friendly banking application designed for simplicity and reliability.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-twitter"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
-                        <a href="#"><i class="bi bi-github"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="{{ url_for('about') }}">About Us</a></li>
-                        {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('account') }}">My Account</a></li>
-                        <li><a href="{{ url_for('transfer') }}">Transfer Money</a></li>
-                        {% else %}
-                        <li><a href="{{ url_for('login') }}">Login</a></li>
-                        <li><a href="{{ url_for('register') }}">Register</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Contact</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="bi bi-geo-alt-fill me-2"></i> 123 Banking Street, Financial District</li>
-                        <li><i class="bi bi-envelope-fill me-2"></i> support@simplebankapp.com</li>
-                        <li><i class="bi bi-telephone-fill me-2"></i> (123) 456-7890</li>
-                    </ul>
-                </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h5><i class="bi bi-bank2 me-2"></i>SecureBank Pro</h5>
+            <p class="mb-3">
+              Your trusted partner in digital banking. Secure, reliable, and
+              user-friendly banking services designed for the modern world.
+            </p>
+            <div class="social-icons">
+              <a href="#"><i class="bi bi-facebook"></i></a>
+              <a href="#"><i class="bi bi-twitter"></i></a>
+              <a href="#"><i class="bi bi-linkedin"></i></a>
+              <a href="#"><i class="bi bi-github"></i></a>
             </div>
-            <hr class="mt-4 mb-4">
-            <div class="row">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <p class="mb-0">&copy; {{ current_year }} SimpleBankApp. All rights reserved. Developed by <a href="https://github.com/lanlanjr" target="_blank">A.IBO.JR.</a></p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0">
-                        <a href="#">Privacy Policy</a> | 
-                        <a href="#">Terms of Service</a>
-                    </p>
-                </div>
-            </div>
+          </div>
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h5><i class="bi bi-link-45deg me-2"></i>Quick Links</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="{{ url_for('about') }}"
+                  ><i class="bi bi-chevron-right me-2"></i>About Us</a
+                >
+              </li>
+              {% if current_user.is_authenticated %}
+              <li>
+                <a href="{{ url_for('account') }}"
+                  ><i class="bi bi-chevron-right me-2"></i>My Account</a
+                >
+              </li>
+              <li>
+                <a href="{{ url_for('transfer') }}"
+                  ><i class="bi bi-chevron-right me-2"></i>Transfer Money</a
+                >
+              </li>
+              {% else %}
+              <li>
+                <a href="{{ url_for('login') }}"
+                  ><i class="bi bi-chevron-right me-2"></i>Login</a
+                >
+              </li>
+              <li>
+                <a href="{{ url_for('register') }}"
+                  ><i class="bi bi-chevron-right me-2"></i>Open Account</a
+                >
+              </li>
+              {% endif %}
+              <li>
+                <a href="#"
+                  ><i class="bi bi-chevron-right me-2"></i>Security Center</a
+                >
+              </li>
+              <li>
+                <a href="#"
+                  ><i class="bi bi-chevron-right me-2"></i>Help & Support</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <h5><i class="bi bi-envelope me-2"></i>Contact Us</h5>
+            <ul class="list-unstyled">
+              <li>
+                <i class="bi bi-geo-alt-fill me-2"></i> 123 Financial Plaza,
+                Banking District
+              </li>
+              <li>
+                <i class="bi bi-envelope-fill me-2"></i>
+                support@securebankpro.com
+              </li>
+              <li><i class="bi bi-telephone-fill me-2"></i> 1-800-SECURE-1</li>
+              <li><i class="bi bi-clock me-2"></i> 24/7 Customer Support</li>
+            </ul>
+          </div>
         </div>
+        <hr class="mt-4 mb-4" />
+        <div class="row">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <p class="mb-0">
+              &copy; {{ current_year }} SecureBank Pro. All rights reserved. |
+              Developed by
+              <a href="https://github.com/lanlanjr" target="_blank"
+                >A.IBO.JR.</a
+              >
+            </p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <p class="mb-0">
+              <a href="#">Privacy Policy</a> |
+              <a href="#">Terms of Service</a> |
+              <a href="#">Security</a>
+            </p>
+          </div>
+        </div>
+      </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     {% block scripts %}{% endblock %}
-</body>
-</html> 
+  </body>
+</html>

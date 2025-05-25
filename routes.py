@@ -114,24 +114,33 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        # Trim whitespace from username and email
+        # Trim whitespace and normalize
         username = form.username.data.strip()
         email = form.email.data.strip()
-        # Check for existing username or email (case-insensitive)
+        # Check for existing username/email (case-insensitive)
         if User.query.filter(db.func.lower(User.username) == username.lower()).first():
-            flash('Username already exists. Please choose a different one.')
+            flash('Username already exists. Please choose a different one.', 'danger')
             return render_template('register.html', title='Register', form=form)
         if User.query.filter(db.func.lower(User.email) == email.lower()).first():
-            flash('Email already registered. Please use a different email address.')
+            flash('Email already registered. Please use a different email address.', 'danger')
             return render_template('register.html', title='Register', form=form)
-        user = User(username=username, email=email, status='pending')
+        # Create user with pending status
+        user = User(
+            username=username,
+            email=email,
+            firstname=form.firstname.data.strip(),
+            lastname=form.lastname.data.strip(),
+            phone=form.phone.data.strip(),
+            status='pending',
+            # Add other fields as needed
+        )
         user.set_password(form.password.data)
         user.set_pin(form.pin.data)
         user.security_question = form.security_question.data
         user.set_security_answer(form.security_answer.data)
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been registered and is awaiting admin approval.')
+        flash('Your account has been registered and is awaiting admin approval.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 

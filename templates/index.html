@@ -1,39 +1,241 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="row">
-    <div class="col-lg-8 offset-lg-2">
-        <div class="card text-center">
-            <div class="card-header">
-                <h2>Welcome to SimpleBankApp</h2>
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">Hello, {{ current_user.username }}!</h5>
-                <p class="card-text">
-                    What would you like to do today?
-                </p>
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="bi bi-wallet"></i> Account</h5>
-                                <p class="card-text">View your balance and recent transactions</p>
-                                <a href="{{ url_for('account') }}" class="btn btn-primary">Go to Account</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="bi bi-arrow-left-right"></i> Transfer</h5>
-                                <p class="card-text">Send money to another user account</p>
-                                <a href="{{ url_for('transfer') }}" class="btn btn-primary">Make a Transfer</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+{% extends "base.html" %} {% block content %}
+<!-- Welcome Section -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card balance-card">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h2 class="mb-2">
+              <i class="bi bi-bank2 me-2"></i>Welcome Back, {{
+              current_user.username }}!
+            </h2>
+            <p class="balance-label mb-0">
+              Ready to manage your finances with SecureBank Pro
+            </p>
+          </div>
+          <div class="col-md-4 text-end">
+            <i
+              class="bi bi-shield-check"
+              style="font-size: 3rem; opacity: 0.3"
+            ></i>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
-{% endblock %} 
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+  <div class="col-12">
+    <h4 class="mb-3">
+      <i class="bi bi-lightning-charge me-2"></i>Quick Actions
+    </h4>
+  </div>
+  <div class="col-md-3 mb-3">
+    <a href="{{ url_for('account') }}" class="quick-action">
+      <i class="bi bi-wallet2"></i>
+      <h5>My Account</h5>
+      <p>View balance & transactions</p>
+    </a>
+  </div>
+  <div class="col-md-3 mb-3">
+    <a href="{{ url_for('transfer') }}" class="quick-action">
+      <i class="bi bi-arrow-left-right"></i>
+      <h5>Transfer Money</h5>
+      <p>Send money securely</p>
+    </a>
+  </div>
+  <div class="col-md-3 mb-3">
+    <a href="{{ url_for('account') }}" class="quick-action">
+      <i class="bi bi-clock-history"></i>
+      <h5>Recent Activity</h5>
+      <p>View transaction history</p>
+    </a>
+  </div>
+  <div class="col-md-3 mb-3">
+    <a href="#" class="quick-action" onclick="alert('Feature coming soon!')">
+      <i class="bi bi-credit-card"></i>
+      <h5>Payment Center</h5>
+      <p>Pay bills & services</p>
+    </a>
+  </div>
+</div>
+
+<!-- Account Overview -->
+<div class="row mb-4">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-graph-up"></i>Account Overview
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="me-3">
+                <i
+                  class="bi bi-person-circle"
+                  style="font-size: 2rem; color: var(--secondary-blue)"
+                ></i>
+              </div>
+              <div>
+                <h6 class="mb-1">Account Holder</h6>
+                <p class="mb-0 text-muted">{{ current_user.username }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="me-3">
+                <i
+                  class="bi bi-shield-check"
+                  style="font-size: 2rem; color: var(--accent-green)"
+                ></i>
+              </div>
+              <div>
+                <h6 class="mb-1">Account Status</h6>
+                <p class="mb-0">
+                  {% if current_user.status == 'active' %}
+                  <span class="badge status-active">Active & Secure</span>
+                  {% elif current_user.status == 'deactivated' %}
+                  <span class="badge status-deactivated">Deactivated</span>
+                  {% else %}
+                  <span class="badge status-pending">Pending Activation</span>
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-md-6">
+            <a href="{{ url_for('account') }}" class="btn btn-primary w-100">
+              <i class="bi bi-eye me-2"></i>View Full Account Details
+            </a>
+          </div>
+          <div class="col-md-6">
+            <a href="{{ url_for('transfer') }}" class="btn btn-success w-100">
+              <i class="bi bi-send me-2"></i>Make a Transfer
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Security & Features -->
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-shield-lock"></i>Security Features
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <div class="d-flex align-items-center mb-2">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <small>Two-Factor Authentication</small>
+          </div>
+          <div class="d-flex align-items-center mb-2">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <small>End-to-End Encryption</small>
+          </div>
+          <div class="d-flex align-items-center mb-2">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <small>Real-time Monitoring</small>
+          </div>
+          <div class="d-flex align-items-center mb-2">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <small>Fraud Protection</small>
+          </div>
+        </div>
+        <div class="text-center">
+          <button
+            class="btn btn-outline-primary btn-sm"
+            onclick="alert('Security center coming soon!')"
+          >
+            <i class="bi bi-gear me-1"></i>Security Settings
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Banking Services -->
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-grid-3x3-gap"></i>Banking Services
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-2 col-6 mb-3 text-center">
+            <div class="p-3">
+              <i
+                class="bi bi-piggy-bank"
+                style="font-size: 2rem; color: var(--secondary-blue)"
+              ></i>
+              <h6 class="mt-2">Savings</h6>
+              <small class="text-muted">Coming Soon</small>
+            </div>
+          </div>
+          <div class="col-md-2 col-6 mb-3 text-center">
+            <div class="p-3">
+              <i
+                class="bi bi-credit-card-2-front"
+                style="font-size: 2rem; color: var(--accent-green)"
+              ></i>
+              <h6 class="mt-2">Cards</h6>
+              <small class="text-muted">Coming Soon</small>
+            </div>
+          </div>
+          <div class="col-md-2 col-6 mb-3 text-center">
+            <div class="p-3">
+              <i
+                class="bi bi-house"
+                style="font-size: 2rem; color: var(--warning-orange)"
+              ></i>
+              <h6 class="mt-2">Loans</h6>
+              <small class="text-muted">Coming Soon</small>
+            </div>
+          </div>
+          <div class="col-md-2 col-6 mb-3 text-center">
+            <div class="p-3">
+              <i
+                class="bi bi-graph-up-arrow"
+                style="font-size: 2rem; color: var(--primary-blue)"
+              ></i>
+              <h6 class="mt-2">Investments</h6>
+              <small class="text-muted">Coming Soon</small>
+            </div>
+          </div>
+          <div class="col-md-2 col-6 mb-3 text-center">
+            <div class="p-3">
+              <i
+                class="bi bi-phone"
+                style="font-size: 2rem; color: var(--danger-red)"
+              ></i>
+              <h6 class="mt-2">Mobile Pay</h6>
+              <small class="text-muted">Coming Soon</small>
+            </div>
+          </div>
+          <div class="col-md-2 col-6 mb-3 text-center">
+            <div class="p-3">
+              <i
+                class="bi bi-headset"
+                style="font-size: 2rem; color: var(--dark-gray)"
+              ></i>
+              <h6 class="mt-2">Support</h6>
+              <small class="text-muted">24/7 Available</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

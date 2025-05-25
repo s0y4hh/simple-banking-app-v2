@@ -15,8 +15,11 @@ class LoginForm(FlaskForm):
         return super(LoginForm, self).validate()
 
 class RegistrationForm(FlaskForm):
+    firstname = StringField('First Name', validators=[DataRequired()])
+    lastname = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    phone = StringField('Phone Number', validators=[DataRequired()])
     password = PasswordField('Password', validators=[
         DataRequired(),
         Regexp(
@@ -40,6 +43,20 @@ class RegistrationForm(FlaskForm):
     ], validators=[DataRequired()])
     security_answer = PasswordField('Security Answer', validators=[DataRequired()])
     submit = SubmitField('Register')
+
+    country_code = SelectField('Country Code', choices=[
+        ('+63', '🇵🇭 +63 (PH)'),
+        ('+1', '🇺🇸 +1 (US)'),
+        ('+44', '🇬🇧 +44 (UK)'),
+        ('+61', '🇦🇺 +61 (AU)'),
+        ('+81', '🇯🇵 +81 (JP)'),
+        ('+86', '🇨🇳 +86 (CN)'),
+        ('+91', '🇮🇳 +91 (IN)'),
+        ('+49', '🇩🇪 +49 (DE)'),
+        ('+33', '🇫🇷 +33 (FR)'),
+        ('+971', '🇦🇪 +971 (AE)'),
+        # Add more as needed
+    ], default='+63', validators=[DataRequired()])
 
     def validate_username(self, username):
         # Enforce trimmed and case-insensitive uniqueness
@@ -164,6 +181,20 @@ class UserEditForm(FlaskForm):
     
     submit = SubmitField('Update User')
     
+    country_code = SelectField('Country Code', choices=[
+        ('+63', '🇵🇭 +63 (PH)'),
+        ('+1', '🇺🇸 +1 (US)'),
+        ('+44', '🇬🇧 +44 (UK)'),
+        ('+61', '🇦🇺 +61 (AU)'),
+        ('+81', '🇯🇵 +81 (JP)'),
+        ('+86', '🇨🇳 +86 (CN)'),
+        ('+91', '🇮🇳 +91 (IN)'),
+        ('+49', '🇩🇪 +49 (DE)'),
+        ('+33', '🇫🇷 +33 (FR)'),
+        ('+971', '🇦🇪 +971 (AE)'),
+        # Add more as needed
+    ], default='+63 ', validators=[Optional()])
+
     def __init__(self, original_email, *args, **kwargs):
         super(UserEditForm, self).__init__(*args, **kwargs)
         self.original_email = original_email
