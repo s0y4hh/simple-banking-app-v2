@@ -30,6 +30,15 @@ class RegistrationForm(FlaskForm):
         DataRequired(),
         Regexp(r'^\d{4,6}$', message="PIN must be 4 to 6 digits.")
     ])
+    security_question = SelectField('Security Question', choices=[
+        ('', '-- Select a security question --'),
+        ('first_pet', "What was the name of your first pet?"),
+        ('first_teacher', "What is the last name of your first teacher?"),
+        ('favorite_childhood_friend', "What is the first name of your favorite childhood friend?"),
+        ('memorable_place', "What is the name of a memorable place from your childhood?"),
+        ('dream_job', "What was your dream job as a child?")
+    ], validators=[DataRequired()])
+    security_answer = PasswordField('Security Answer', validators=[DataRequired()])
     submit = SubmitField('Register')
 
     def validate_username(self, username):

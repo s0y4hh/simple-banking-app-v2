@@ -35,6 +35,9 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)  # Admin status
     is_manager = db.Column(db.Boolean, default=False)  # Manager status (can manage admins)
     date_registered = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    session_token = db.Column(db.String(128), nullable=True)
+    security_question = db.Column(db.String(128), nullable=True)
+    security_answer_hash = db.Column(db.String(128), nullable=True)
     transactions_sent = db.relationship('Transaction', foreign_keys='Transaction.sender_id', backref='sender', lazy='dynamic')
     transactions_received = db.relationship('Transaction', foreign_keys='Transaction.receiver_id', backref='receiver', lazy='dynamic')
     
@@ -77,6 +80,14 @@ class User(UserMixin, db.Model):
     def check_pin(self, pin):
         """Check the user's PIN"""
         return bcrypt.check_password_hash(self.pin_hash, pin)
+    
+    def set_security_answer(self, answer):
+        """Set the user's security answer, hashing it for security"""
+        self.security_answer_hash = bcrypt.generate_password_hash(answer).decode('utf-8')
+    
+    def check_security_answer(self, answer):
+        """Check the user's security answer"""
+        return bcrypt.check_password_hash(self.security_answer_hash, answer)
     
     @property
     def is_active(self):

@@ -127,6 +127,8 @@ def register():
         user = User(username=username, email=email, status='pending')
         user.set_password(form.password.data)
         user.set_pin(form.pin.data)
+        user.security_question = form.security_question.data
+        user.set_security_answer(form.security_answer.data)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been registered and is awaiting admin approval.')
@@ -237,33 +239,55 @@ def reset_password_request():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
-            send_password_reset_email(user)
+            # Store user id in session for next step
+            session['reset_user_id'] = user.id
+            return redirect(url_for('reset_password_security'))
         flash('Check your email for instructions to reset your password')
         return redirect(url_for('login'))
     return render_template('reset_password_request.html', title='Reset Password', form=form)
 
-@app.route('/reset_password/<token>', methods=['GET', 'POST'])
-@limiter.limit("5 per hour")
-def reset_password(token):
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    try:
-        serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-        email = serializer.loads(token, salt='password-reset', max_age=3600)
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            return redirect(url_for('index'))
-    except SignatureExpired:
-        flash('The password reset link has expired.')
+@app.route('/reset_password_security', methods=['GET', 'POST'])
+def reset_password_security():
+    user_id = session.get('reset_user_id')
+    if not user_id:
+        flash('Session expired. Please start the password reset process again.')
         return redirect(url_for('reset_password_request'))
-    except:
-        flash('Invalid reset link')
+    user = User.query.get(user_id)
+    if not user or not user.security_question:
+        flash('No security question set for this account.')
         return redirect(url_for('reset_password_request'))
-    
+    question_map = {
+        'first_pet': "What was the name of your first pet?",
+        'first_teacher': "What is the last name of your first teacher?",
+        'favorite_childhood_friend': "What is the first name of your favorite childhood friend?",
+        'memorable_place': "What is the name of a memorable place from your childhood?",
+        'dream_job': "What was your dream job as a child?"
+    }
+    question = question_map.get(user.security_question, 'Security Question')
+    if request.method == 'POST':
+        answer = request.form.get('security_answer', '')
+        if user.check_security_answer(answer):
+            # Mark as verified and allow password reset
+            session['reset_verified'] = True
+            return redirect(url_for('reset_password_token'))
+        else:
+            flash('Incorrect answer to the security question.')
+    return render_template('reset_password_security.html', question=question)
+
+@app.route('/reset_password_token', methods=['GET', 'POST'])
+def reset_password_token():
+    user_id = session.get('reset_user_id')
+    verified = session.get('reset_verified')
+    if not user_id or not verified:
+        flash('Session expired or not verified. Please start the password reset process again.')
+        return redirect(url_for('reset_password_request'))
+    user = User.query.get(user_id)
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
+        session.pop('reset_user_id', None)
+        session.pop('reset_verified', None)
         flash('Your password has been reset.')
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)

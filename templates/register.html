@@ -48,6 +48,23 @@
             <div class="text-danger">{{ error }}</div>
             {% endfor %}
           </div>
+          <div class="mb-3">
+            {{ form.security_question.label(class="form-label") }} {{
+            form.security_question(class="form-select") }} {% for error in
+            form.security_question.errors %}
+            <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="mb-3">
+            {{ form.security_answer.label(class="form-label") }} {{
+            form.security_answer(class="form-control", autocomplete="off") }}
+            <div class="form-text">
+              Answer is case-sensitive. Avoid answers that are easy to guess.
+            </div>
+            {% for error in form.security_answer.errors %}
+            <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
           <div class="d-grid gap-2">
             {{ form.submit(class="btn btn-primary") }}
           </div>
