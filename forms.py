@@ -2,6 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, FloatField, RadioField, SelectField, HiddenField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, NumberRange, Optional
 from models import User
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -20,12 +23,15 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
 
     def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
+        # Enforce trimmed and case-insensitive uniqueness
+        trimmed = username.data.strip()
+        user = User.query.filter(db.func.lower(User.username) == trimmed.lower()).first()
         if user is not None:
             raise ValidationError('Please use a different username.')
 
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
+        trimmed = email.data.strip()
+        user = User.query.filter(db.func.lower(User.email) == trimmed.lower()).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
@@ -156,4 +162,4 @@ class ConfirmTransferForm(FlaskForm):
     recipient_account = HiddenField('Recipient Account Number')
     amount = HiddenField('Amount')
     transfer_type = HiddenField('Transfer Type')
-    submit = SubmitField('Confirm Transfer') 
+    submit = SubmitField('Confirm Transfer')
