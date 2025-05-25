@@ -114,7 +114,17 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data, status='pending')
+        # Trim whitespace from username and email
+        username = form.username.data.strip()
+        email = form.email.data.strip()
+        # Check for existing username or email (case-insensitive)
+        if User.query.filter(db.func.lower(User.username) == username.lower()).first():
+            flash('Username already exists. Please choose a different one.')
+            return render_template('register.html', title='Register', form=form)
+        if User.query.filter(db.func.lower(User.email) == email.lower()).first():
+            flash('Email already registered. Please use a different email address.')
+            return render_template('register.html', title='Register', form=form)
+        user = User(username=username, email=email, status='pending')
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
