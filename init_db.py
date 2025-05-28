@@ -463,32 +463,12 @@ def init_db():
         print(cred)
 
 if __name__ == "__main__":
-    print("== Simple Banking App Database Initialization ==")
-    print("\nStep 1: Initializing MySQL database schema directly...")
-    mysql_success = init_mysql_database()
-    
-    if mysql_success:
-        print("\nStep 2: Initializing Flask application database...")
-        flask_success = init_flask_app_db()
-        
-        if flask_success:
-            print("\n=== Database setup complete! ===")
-            print("You can now run the application with `python app.py`")
-        else:
-            print("\n=== ERROR: Flask database initialization failed! ===")
-            print("Check the error messages above for details.")
-            # Exit with error code
-            import sys
-            sys.exit(1)
-    else:
-        print("\n=== ERROR: MySQL database initialization failed! ===")
-        print("Check the error messages above for details.")
-        print("Make sure MySQL server is running and credentials are correct in .env file.")
-        # Exit with error code
-        import sys
-        sys.exit(1)
-    
-    # Additional initialization (if needed) can be called here
+    print("== Simple Banking App Database Initialization (SQLAlchemy based) ==")
+
     from app import app
+
     with app.app_context():
-        init_db()
+        init_db() 
+    
+    print("\n=== SQLAlchemy database schema created and default users seeded. ===")
+    print("If this is for production, ensure drop_all() is handled carefully or removed after first setup.")

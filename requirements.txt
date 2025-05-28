@@ -13,3 +13,4 @@ cryptography
 requests==2.31.0
 Flask-Limiter==3.5.0 
 gunicorn
+psycopg2-binary

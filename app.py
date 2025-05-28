@@ -33,24 +33,30 @@ def create_app():
 
     # Database configuration
 
-    # Construct the MySQL URL from individual environment variables if DATABASE_URL is not provided
-    # Use defaults to avoid None values
-    mysql_user = os.environ.get('MYSQL_USER', 'bankapp')
-    mysql_password = os.environ.get('MYSQL_PASSWORD', 's0y4hh')
-    mysql_host = os.environ.get('MYSQL_HOST', 'localhost')  # Default to localhost if not set
-    mysql_port = os.environ.get('MYSQL_PORT', '3306')
-    mysql_database = os.environ.get('MYSQL_DATABASE', 'simple_banking')
-    
-    # Make sure all values are strings
-    mysql_port = str(mysql_port)
-    
-    # Check if required parameters are set
-    if not mysql_host or not mysql_user or not mysql_database:
-        print(f"WARNING: Missing database configuration. Host: {mysql_host}, User: {mysql_user}, Database: {mysql_database}")
-    
-    db_uri = f"mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
-    print(f"Database URI: {db_uri}")
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    database_url = os.environ.get('DATABASE_URL')
+    if database_url:
+        # Heroku's DATABASE_URL for Postgres starts with postgres://, SQLAlchemy prefers postgresql://
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql://", 1)
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+        print(f"Using DATABASE_URL from environment: {database_url[:30]}...") # Log a snippet for security
+    else:
+        # Fallback to local MySQL setup using individual environment variables
+        print("DATABASE_URL not found, falling back to MYSQL_... variables for local development.")
+        mysql_user = os.environ.get('MYSQL_USER', 'bankapp')
+        mysql_password = os.environ.get('MYSQL_PASSWORD', 's0y4hh')
+        mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
+        mysql_port = os.environ.get('MYSQL_PORT', '3306')
+        mysql_database = os.environ.get('MYSQL_DATABASE', 'simple_banking')
+        
+        if not all([mysql_user, mysql_password, mysql_host, mysql_port, mysql_database]):
+            print("WARNING: One or more MYSQL_ environment variables are not set for local development.")
+            # Handle this case appropriately, maybe raise an error or use a default SQLite for local if preferred
+            # For now, we'll assume they are set or the defaults are acceptable for local testing
+        
+        app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
+        print(f"Using local MySQL URI: mysql+pymysql://{mysql_user}:****@{mysql_host}:{mysql_port}/{mysql_database}")
+
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
